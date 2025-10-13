@@ -1,0 +1,37 @@
+#theme = catppuccin-mocha
+# theme = GruvboxDark
+# font-family = Meslo LGS Nerd Font Mono
+# font-family = CaskaydiaMono Nerd Font
+# font-family = CaskaydiaCove Nerd Font
+#font-size = 14
+#background-opacity = 0.95
+#gtk-titlebar = false
+# custom-shader = /home/chris/bloom.glsl
+#custom-shader = /home/chris/crt.glsl
+#
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-style = SemiBold
+font-size = 13
+
+# Theme
+# theme = light:catppuccin-latte,dark:catppuccin-mocha
+theme = /home/alex/.config/ghostty/themes/catppuccin-mocha.conf
+
+# Cursor
+cursor-invert-fg-bg
+
+# Mouse
+mouse-hide-while-typing
+
+# Window
+# window-padding-x = 7
+# window-padding-y = 7
+# window-padding-balance = true
+# window-decoration = false
+
+# Keybindings
+keybind = ctrl+comma=increase_font_size:1
+keybind = ctrl+minus=decrease_font_size:1
+keybind = ctrl+zero=reset_font_size
