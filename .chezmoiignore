@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# SSH Keys (Private and Public pairs usually, but definitely private)
+.ssh/id_rsa
+.ssh/id_ed25519
+.ssh/authorized_keys
+.ssh/known_hosts
+
+# Cloud Credentials
+.aws/credentials
+.azure/
+.gcloud/
+
+# History files (optional, but good practice)
+.bash_history
+.zsh_history
+.lesshst
+
+# Misc Secrets
+.gnupg/
+**/*.key
+**/*.pem
+.config/wakatime.cfg
+
+# Chezmoi itself
+README.md
+LICENSE
