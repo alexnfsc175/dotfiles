@@ -85,3 +85,34 @@ Se você fizer alterações em outra máquina ou editar direto no GitHub, use:
 2. Verifique: `chezmoi status` (deve aparecer `MM`).
 3. Atualize o source: `chezmoi re-add ~/.config/hypr/hyprland.conf`.
 4. Envie: `chezmoi git -- add . && chezmoi git -- commit -m "update hyprland" && chezmoi git -- push`.
+
+## 5. Segurança e Dados Sensíveis (IMPORTANTE)
+
+Como seus dotfiles estão no GitHub (público ou privado), você **NUNCA** deve comitar senhas, chaves de API, chaves SSH privadas ou outros tokens.
+
+### O que NÃO fazer
+- Não adicione arquivos como `.env` com segredos reais.
+- Não adicione pastas `.ssh` completas sem configurar o `.chezmoiignore`.
+
+### Como prevenir
+1.  **Use `.chezmoiignore`**:
+    Crie um arquivo `.chezmoiignore` na pasta `~/.local/share/chezmoi/`.
+    Liste os arquivos que o Chezmoi deve ignorar (não enviar para o repo), mesmo que você peça para adicionar a pasta inteira.
+    *Exemplo de `.chezmoiignore`:*
+    ```text
+    .ssh/id_rsa
+    .ssh/id_ed25519
+    .config/wakatime.cfg
+    **/*.key
+    ```
+
+2.  **Use Templates para Segredos**:
+    Se você precisa de um arquivo de configuração que mistura configurações públicas com tokens privados, use templates.
+    O Chezmoi se integra com gerenciadores de senha (Bitwarden, KeePassXC, LastPass, etc).
+    *Exemplo:* Em vez de `config.ini`, use `dot_config.ini.tmpl`:
+    ```ini
+    token = {{ (bitwarden "item" "my-api-token").password }}
+    ```
+
+3.  **Verifique antes de enviar**:
+    Sempre rode `chezmoi status` e `chezmoi diff` para ter certeza de que não está adicionando nada indevido.
