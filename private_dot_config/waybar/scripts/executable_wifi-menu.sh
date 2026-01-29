@@ -6,6 +6,11 @@
 # Rofi config
 config="$HOME/.config/rofi/wifi-menu.rasi"
 
+# Force nmcli to use English output for parsing
+nmcli() {
+    LC_ALL=C command nmcli "$@"
+}
+
 options=$(
   echo "Manual Entry"
   echo "Disable Wi-Fi"
