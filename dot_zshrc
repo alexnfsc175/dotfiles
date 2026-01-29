@@ -2,7 +2,6 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 export EDITOR="nvim"
 export SUDO_EDITOR="$EDITOR"
-export PGHOST="/var/run/postgresql"
 
 
 export PATH=$PATH:/usr/local/go/bin
@@ -47,3 +46,18 @@ new_tmux () {
 
 alias tm=new_tmux
 export PATH="$HOME/.npm-global/bin:$PATH"
+# *plugins
+source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+bindkey '^ ' autosuggest-accept\n
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+# *aliases
+if [ -f "/etc/profile.d/aliases.sh" ]; then
+  source "/etc/profile.d/aliases.sh"
+fi
+# git aliases
+if [ -f "/etc/profile.d/aliases_git.sh" ] && type git &>/dev/null; then
+  source "/etc/profile.d/aliases_git.sh"
+fi

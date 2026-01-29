@@ -5,14 +5,12 @@
 local BaseConfig = require("alperan.config.base-config")
 local NvimTree = BaseConfig.new()
 
-
 -- -- Carrega os módulos necessários no topo do arquivo para melhor organização e performance.
 -- local nvim_tree = require("nvim-tree")
 
 ---Configura o NvimTree
 ---@return nil
 function NvimTree.config()
-
 	local nvim_tree = NvimTree:require_once("nvim-tree")
 
 	-- Desabilitar netrw, o explorador de arquivos padrão do vim, para garantir que nvim-tree seja o padrão

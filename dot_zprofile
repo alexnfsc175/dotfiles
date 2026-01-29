@@ -1,5 +1,6 @@
 # Inicia o Hyprland automaticamente se estivermos no TTY1
 if [[ -z "$DISPLAY"  &&  "$(tty)" == "/dev/tty1" ]]; then
-  exec Hyprland
+  # exec Hyprland
+  exec /home/alex/.config/hypr/scripts/start.sh
 fi
 
