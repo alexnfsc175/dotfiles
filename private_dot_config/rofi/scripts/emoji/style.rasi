@@ -4,7 +4,29 @@ configuration {
   show:                       "emoji";
   emoji-mode:                 "copy";
   display-emoji:              "Emojis";
-  show-icons:                 true;
+  show-icons:                 false;
 }
 
 @theme "~/.config/rofi/style.rasi"
+
+// Override listview settings
+element {
+    padding: 10px;
+    spacing: 15px; // Add space between emoji and text
+}
+
+// Target specifically the "icon" part of the text (in rofi-emoji, the emoji is part of the text, but usually the first part)
+// Since rofi-emoji puts everything in one string, we might try to use formatting in the script itself or just compromise.
+// However, rofi-emoji sends formatted pango markup.
+// Let's try to set a base font for element-text, but we rely on the Pango markup in the script for the name.
+// Wait, the script sets markup: -emoji-format '{emoji} <span weight="bold">{name}</span> ...'
+// If I set "font" on element-text, it scales EVERYTHING.
+
+// Valid strategy: 
+// 1. Set a normal font size for the element-text (e.g. 14 or 16).
+// 2. Modify the script to use a huge span size for the {emoji} part.
+
+element-text {
+    font: "JetBrainsMono Nerd Font 14"; // Back to normal size for text
+    vertical-align: 0.5;
+}
