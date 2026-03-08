@@ -46,6 +46,7 @@ new_tmux () {
 
 alias tm=new_tmux
 export PATH="$HOME/.npm-global/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 # *plugins
 source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -61,3 +62,5 @@ fi
 if [ -f "/etc/profile.d/aliases_git.sh" ] && type git &>/dev/null; then
   source "/etc/profile.d/aliases_git.sh"
 fi
+
+. "$HOME/.local/share/../bin/env"
