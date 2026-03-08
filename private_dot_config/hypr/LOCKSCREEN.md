@@ -9,7 +9,7 @@ O sistema de lockscreen e wallpaper é composto por:
 | **hyprlock** | Trava a tela | `hyprlock.conf` → presets em `hyprlock/presets/` |
 | **hypridle** | Detecta inatividade | `hypridle.conf` |
 | **awww** | Wallpaper estático/GIF (padrão) | — |
-| **NeoWall** | Wallpaper shader GLSL (opcional) | `shaders/*.glsl` |
+| **NeoWall** | Wallpaper shader GLSL (opcional) | `~/.config/neowall/config.vibe` |
 
 ### Fluxo de Eventos
 
@@ -73,29 +73,46 @@ yay -S neowall-git
 # Ver status atual
 ~/.config/hypr/scripts/wallpaper-mode.sh --status
 
-# Ativar shader GLSL
+# Ativar shader GLSL (built-in do NeoWall)
 ~/.config/hypr/scripts/wallpaper-mode.sh neowall plasma
 ~/.config/hypr/scripts/wallpaper-mode.sh neowall aurora
+~/.config/hypr/scripts/wallpaper-mode.sh neowall matrix_rain
+~/.config/hypr/scripts/wallpaper-mode.sh neowall retro_wave
+
+# Ativar shader customizado
 ~/.config/hypr/scripts/wallpaper-mode.sh neowall waves
 
 # Voltar para awww (wallpaper normal)
 ~/.config/hypr/scripts/wallpaper-mode.sh awww
 
-# Listar shaders disponíveis
+# Listar todos os shaders
 ~/.config/hypr/scripts/wallpaper-mode.sh --list-shaders
+
+# Controles NeoWall (quando ativo)
+neowall next       # próximo shader
+neowall pause      # pausar
+neowall resume     # retomar
+neowall current    # shader atual
 ```
 
-### Shaders Incluídos
+### Shaders
 
-Os shaders ficam em `~/.config/hypr/shaders/`:
+NeoWall busca shaders em duas localizações:
 
-| Shader | Efeito | GPU (GTX 1060) |
-|--------|--------|----------------|
-| `plasma.glsl` | Plasma colorido escuro | ~2% |
-| `aurora.glsl` | Aurora boreal com estrelas | ~3% |
-| `waves.glsl` | Ondas suaves com brilho | ~1-2% |
+| Local | Tipo | Quantidade |
+|-------|------|------------|
+| `/usr/share/neowall/shaders/` | Built-in | 30+ |
+| `~/.config/neowall/shaders/` | Customizado | 3 (Catppuccin) |
 
-Todos usam paleta **Catppuccin Macchiato** para manter consistência visual.
+**Shaders built-in populares:** `plasma`, `aurora`, `matrix_rain`, `retro_wave`, `synthwave`, `moon_ocean`, `fractal_land`, `mandelbrot`, `star_next`
+
+**Shaders customizados incluídos:**
+
+| Shader | Efeito | GPU |
+|--------|--------|-----|
+| `waves` | Ondas suaves com brilho | ~1-2% |
+| `plasma` (custom) | Plasma com paleta Catppuccin | ~2% |
+| `aurora` (custom) | Aurora boreal dark | ~3% |
 
 ### Como Funciona com o Lockscreen
 
@@ -108,11 +125,36 @@ Quando o NeoWall está ativo e o hyprlock trava a tela:
 
 1. Acesse [shadertoy.com](https://shadertoy.com)
 2. Copie o código GLSL do shader
-3. Salve em `~/.config/hypr/shaders/nomedoshader.glsl`
+3. Salve em `~/.config/neowall/shaders/nomedoshader.glsl`
 4. Teste: `~/.config/hypr/scripts/wallpaper-mode.sh neowall nomedoshader`
 
-> **Nota:** Alguns shaders do Shadertoy precisam de adaptação para NeoWall.
+> **Nota:** NeoWall é compatível com formato Shadertoy.
 > O formato básico é ter `void mainImage(out vec4, in vec2)` e `void main()`.
+
+### Configuração Direta (sem script)
+
+O NeoWall usa `~/.config/neowall/config.vibe`:
+
+```
+# Shader em todos os monitores
+default {
+    shader retro_wave.glsl
+    shader_speed 0.8
+}
+
+# Shader por monitor
+output {
+    eDP-1 {
+        shader aurora.glsl
+    }
+    HDMI-A-1 {
+        shader matrix_rain.glsl
+    }
+    DP-2 {
+        shader plasma.glsl
+    }
+}
+```
 
 ---
 
@@ -139,6 +181,7 @@ chezmoi edit ~/.config/hypr/hypridle.conf
 ~/.config/hypr/
 ├── hyprlock.conf              # Carrega preset via source=
 ├── hypridle.conf              # Timeouts de inatividade + DPMS
+├── LOCKSCREEN.md              # Este documento
 ├── hyprlock/
 │   ├── presets/
 │   │   ├── blur.conf          # ✅ Default — screenshot + blur
@@ -147,13 +190,20 @@ chezmoi edit ~/.config/hypr/hypridle.conf
 │   │   └── cat-2.conf         # ⚠️ Quebrado (wall.set inexistente)
 │   ├── wallpapers/            # Imagens para o preset slideshow
 │   └── *.png                  # Imagens usadas nos presets
-├── shaders/
-│   ├── plasma.glsl            # Shader de plasma escuro
-│   ├── aurora.glsl            # Shader de aurora boreal
-│   └── waves.glsl             # Shader de ondas suaves
+├── shaders/                   # Cópia dos shaders (backup)
+│   ├── plasma.glsl
+│   ├── aurora.glsl
+│   └── waves.glsl
 └── scripts/
     ├── lockscreen-preset.sh   # Troca presets do hyprlock
     └── wallpaper-mode.sh      # Alterna awww ↔ NeoWall
+
+~/.config/neowall/             # Config do NeoWall
+├── config.vibe                # Gerado por wallpaper-mode.sh
+└── shaders/                   # Shaders customizados
+    ├── plasma.glsl
+    ├── aurora.glsl
+    └── waves.glsl
 ```
 
 ---
@@ -184,6 +234,7 @@ chezmoi apply
 | Tela branca no lock | Verificar que preset é `blur`, não `cat-2` |
 | Widgets só em 1 monitor | Verificar `monitor =` (vazio) no preset |
 | NeoWall não inicia | `yay -S neowall-git` e verificar GPU drivers |
+| NeoWall `--shader` erro | Usar `wallpaper-mode.sh` (gera config.vibe) |
 | awww não restaura | `awww-daemon &` e depois `awww restore` |
 | DPMS não desliga | Verificar `hypridle.conf` timeout correto |
 | Shader com erro | Verificar formato GLSL (precisa de `void main()`) |
