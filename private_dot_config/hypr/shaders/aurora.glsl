@@ -1,13 +1,6 @@
-// aurora.glsl — Shader de aurora boreal animada
+// aurora.glsl — Shader de aurora boreal (Catppuccin Macchiato)
 // Efeito de luzes ondulantes no estilo northern lights
 // GPU: Leve (~3% em GTX 1060)
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform vec2 iResolution;
-uniform float iTime;
 
 float hash(float n) {
     return fract(sin(n) * 43758.5453123);
@@ -29,7 +22,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
     float t = iTime * 0.15;
 
-    // Céu escuro base (Catppuccin crust/mantle)
+    // Céu escuro (Catppuccin crust)
     vec3 sky = vec3(0.094, 0.095, 0.149);
 
     // Aurora layers
@@ -43,7 +36,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         aurora += band * n * (1.0 - fi * 0.2);
     }
 
-    // Cores da aurora — verde/teal do Catppuccin
+    // Cores da aurora — green/teal/mauve do Catppuccin
     vec3 auroraColor1 = vec3(0.545, 0.855, 0.659);  // green
     vec3 auroraColor2 = vec3(0.545, 0.835, 0.792);  // teal
     vec3 auroraColor3 = vec3(0.776, 0.627, 0.965);  // mauve
@@ -63,8 +56,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     color *= vig;
 
     fragColor = vec4(color, 1.0);
-}
-
-void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
 }

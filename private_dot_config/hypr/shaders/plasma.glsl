@@ -1,13 +1,6 @@
-// plasma.glsl — Shader de plasma animado (estilo Shadertoy)
+// plasma.glsl — Shader de plasma animado (Catppuccin Macchiato)
 // Efeito de plasma colorido com movimento suave
 // GPU: Muito leve (~2% em GTX 1060)
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform vec2 iResolution;
-uniform float iTime;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
@@ -21,7 +14,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
     float v = (v1 + v2 + v3 + v4) * 0.25;
 
-    // Catppuccin Macchiato inspired dark palette
+    // Catppuccin Macchiato dark palette
     vec3 col1 = vec3(0.094, 0.095, 0.149);  // crust
     vec3 col2 = vec3(0.180, 0.190, 0.290);  // surface0
     vec3 col3 = vec3(0.490, 0.500, 0.680);  // overlay1
@@ -36,8 +29,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     color *= vig;
 
     fragColor = vec4(color, 1.0);
-}
-
-void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
 }

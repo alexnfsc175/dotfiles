@@ -1,13 +1,6 @@
-// waves.glsl — Shader de ondas suaves
+// waves.glsl — Shader de ondas suaves (Catppuccin Macchiato)
 // Efeito de ondas escuras com brilho sutil
 // GPU: Muito leve (~1-2% em GTX 1060)
-
-#ifdef GL_ES
-precision mediump float;
-#endif
-
-uniform vec2 iResolution;
-uniform float iTime;
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord / iResolution.xy;
@@ -30,11 +23,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float y = uv.y + wave;
     float band = smoothstep(0.3, 0.5, y) * smoothstep(0.7, 0.5, y);
 
-    // Cor do brilho — blue/sapphire do Catppuccin
-    vec3 glowColor = vec3(0.490, 0.768, 0.894);  // sapphire
+    // Brilho — sapphire do Catppuccin
+    vec3 glowColor = vec3(0.490, 0.768, 0.894);
     vec3 color = baseColor + glowColor * band * 0.15;
 
-    // Segundo layer de ondas com cor diferente
+    // Segundo layer de ondas
     float wave2 = 0.0;
     for (int i = 0; i < 3; i++) {
         float fi = float(i);
@@ -49,8 +42,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     color *= vig;
 
     fragColor = vec4(color, 1.0);
-}
-
-void main() {
-    mainImage(gl_FragColor, gl_FragCoord.xy);
 }
