@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # Directories
-wallpapers_dir="$HOME/Pictures/walls/"
-non_cat_dir="$HOME/Pictures/walls/non-cat/"
+# wallpapers_dir="$HOME/Pictures/walls/"
+# non_cat_dir="$HOME/Pictures/walls/non-cat/"
+wallpapers_dir="$HOME/.config/hypr/theme/walls"
+non_cat_dir="$HOME/.config/hypr/theme/walls"
 
 RANDOM_PIC=$(find "${wallpapers_dir}" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" \) | shuf -n 1)
 RANDOM_PIC_2=$(find "${non_cat_dir}" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.gif" \) | shuf -n 1)
@@ -50,7 +52,7 @@ else
 fi
 
 # Set the wallpaper using swww
-swww img "$wallpaper" \
+awww img "$wallpaper" \
   --transition-bezier 0.5,1.19,.8,.4 \
   --transition-type wipe \
   --transition-duration 2 \
