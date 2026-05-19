@@ -1,0 +1,149 @@
+# Base Rules
+windowrule = match:float true, match:class ^(center-float-large)$
+windowrule = size 70% 70%, match:class ^(center-float-large)$
+windowrule = center 1, match:class ^(center-float-large)$
+
+windowrule = match:float true, match:class ^(center-float)$
+windowrule = match:float true, match:title ^(.*Open Folder.*)$|^(.*Open File.*)$|^(.*Save File.*)$|^(.*Save Folder.*)$|^(.*Save Image.*)$|^(.*Save As.*)$|^(.*Open As.*)$
+windowrule = size 50% 50%, match:class ^(center-float)$
+windowrule = size 50% 50%, match:title ^(.*Open Folder.*)$|^(.*Open File.*)$|^(.*Save File.*)$|^(.*Save Folder.*)$|^(.*Save Image.*)$|^(.*Save As.*)$|^(.*Open As.*)$
+windowrule = center 1, match:class ^(center-float)$
+windowrule = center 1, match:title ^(.*Open Folder.*)$|^(.*Open File.*)$|^(.*Save File.*)$|^(.*Save Folder.*)$|^(.*Save Image.*)$|^(.*Save As.*)$|^(.*Open As.*)$
+
+windowrule = match:float true, match:class ^(center-float-mini)$|^(.*galculator.*)$|^(.*ytdlp-gui.*)$|^(.*udiskie.*)$|^(.*Calculator.*)$
+windowrule = size 30% 40%, match:class ^(center-float-mini)$|^(.*galculator.*)$|^(.*ytdlp-gui.*)$|^(.*udiskie.*)$|^(.*Calculator.*)$
+windowrule = center 1, match:class ^(center-float-mini)$|^(.*galculator.*)$|^(.*ytdlp-gui.*)$|^(.*udiskie.*)$|^(.*Calculator.*)$
+
+
+# Float Rules
+# Correção: O "float" antigo estava causando erros. A linha abaixo comentada estava correta na lógica, mas a sintaxe V1 pode falhar.
+# windowrulev2 = float, class:^(xfce-polkit)$|^(wleave)$|^(nwg-look)$|^(nm-connection-editor)$|^(org.twosheds.iwgtk)$|^(overskride)$
+# windowrulev2 = float, title:^(branchdialog)$|^(Picture-in-Picture)$
+
+windowrule = float false, match:class ^(qemu-system-x86_64)$
+
+# Ignore maximize requests from apps.
+# CORREÇÃO: Mudado para windowrulev2
+windowrule = suppress_event maximize, match:class .*
+
+# Fix some dragging issues with XWayland
+# CORREÇÃO: Mudado para windowrulev2 (a sintaxe original era v2 aplicada em comando v1)
+# windowrule = no_initial_focus true, xwayland true, floating true, fullscreen false, pinned false, class:^$ && title:^$
+
+
+# common modals
+# CORREÇÃO: Todos convertidos para windowrulev2 para evitar erros de parser
+windowrule = match:float true, match:title ^(Open)$
+windowrule = match:float true, match:title ^(Choose Files)$
+windowrule = match:float true, match:title ^(Save As)$
+windowrule = match:float true, match:title ^(Confirm to replace files)$
+windowrule = match:float true, match:title ^(File Operation Progress)$
+windowrule = match:float true, match:class ^([Xx]dg-desktop-portal-gtk)$
+windowrule = match:float true, match:class ^(mpv)$
+
+windowrule = size 60% 70%, match:class ^(mpv)$
+
+
+# Workspace Rules
+## System
+windowrule = workspace 8, match:class ^(.*virt-manager.*)$|(.*PikaBackup.*)$|(.*VirtualBox Manager.*)$
+windowrule = workspace 17, match:class ^(.*GParted.*)$|(.*clamtk.*)$|(.*gnome.Logs.*)$
+
+## Gaming
+windowrule = workspace 7, match:class ^(.*steam_app.*)$|(.*gamescope.*)$|(.*atlauncher.*)$|(.*Minecraft.*)$
+windowrule = workspace 16 silent, match:class ^([Ss]team)$|(.*heroic.*)$
+windowrule = workspace 7, match:class ^(.*Ryujinx.*)$|(.*cemu.*)$|(.*dolphin.*)$|(.*RetroArch.*)$|^(.*xemu.*)$|(.*duckstation.*)$|(.*rpcs3.*)$
+
+## Media
+windowrule = workspace 6, match:class ^(.*kdenlive.*)$
+windowrule = workspace 21 silent, match:class ^(.*thunderbird.*)$
+windowrule = workspace 22 silent, match:class ^(.*btop.*)$
+windowrule = workspace 22 silent, match:class ^(.*nvtop.*)$
+windowrule = workspace 10 silent, match:class ^(.*[Ss]potify.*)$|(.*tidal-hifi.*)$|(.*You[Tt]ube Music.*)$
+windowrule = workspace 20 silent, match:class ^(.*discord.*)$|(.*vesktop.*)$|(.*WebCord.*)$
+windowrule = workspace 6, match:class ^(.*obsproject.*)$
+windowrule = workspace 14, match:class ^(.*easyeffects.*)$|^(.*qpwgraph.*)$|^(.*Helvum.*)$
+windowrule = workspace 5, match:class ^(.*vital.*)$|(.*fl64.*)$|(.*nicotine_plus.*)$
+windowrule = workspace 5, match:title ^(.*FL Studio.*)$
+windowrule = workspace 4, match:class ^(.*pinta.*)$|(.*krita.*)$|(.*blender.*)$|(.*Upscayl.*)$
+
+## Productivity/Dev
+windowrule = workspace 9 silent, match:class ^(.*obsidian.*)$|(.*Zotero.*)$
+windowrule = workspace 2, match:class ^(.*Code.*)$|(.*codium.*)$|(.*VSCodium.*)$|(.*neovide.*)$
+
+
+# Animation Rules
+windowrule = animation slide, match:title ^(.*cava.*)$
+windowrule = animation popin, match:class ^(.*wleave.*)$
+
+
+# Scratchpads
+windowrule = match:float true, match:class ^(scratchpad-large)$
+windowrule = center 1, match:class ^(scratchpad-large)$
+windowrule = size 70% 70%, match:class ^(scratchpad-large)$
+windowrule = animation slide, match:class ^(scratchpad-large)$
+windowrule = workspace special: scratchpad-large silent, match:class ^(scratchpad-large)$
+windowrule = match:float true, match:title ^(Picture-in-Picture)$
+windowrule = match:float true, match:class ^(scratchpad)$
+windowrule = center 1, match:class ^(scratchpad)$
+windowrule = size 50% 50%, match:class ^(scratchpad)$
+windowrule = animation slide, match:class ^(scratchpad)$
+windowrule = workspace special: scratchpad silent, match:class ^(scratchpad)$
+
+windowrule = match:float true, match:class ^(scratchpad-mini)$
+windowrule = center 1, match:class ^(scratchpad-mini)$
+windowrule = size 30% 40%, match:class ^(scratchpad-mini)$
+windowrule = animation slide, match:class ^(scratchpad-mini)$
+windowrule = workspace special: scratchpad-mini silent, match:class ^(scratchpad-mini)$
+
+#$sideScratchpad = class:^(.*pavucontrol.*)$|(.*blueman-manager.*)$
+#windowrulev2 = workspace special:scratchpad silent, $sideScratchpad
+#windowrulev2 = size 30% 90%, $sideScratchpad
+#windowrulev2 = float, $sideScratchpad
+#windowrulev2 = center 1, $sideScratchpad
+
+
+# Specific App Rules
+windowrule = opacity 0.0 override 0.0 override, match:class ^(.*xwaylandvideobridge.*)$
+#windowrule = noanim true, match:class ^(.*xwaylandvideobridge.*)$
+#windowrule = noblur true, match:class ^(.*xwaylandvideobridge.*)$
+#windowrule = no_initial_focus true, match:class ^(.*xwaylandvideobridge.*)$
+#windowrule = maxsize 1 1, match:class ^(.*xwaylandvideobridge.*)$
+
+#windowrule = match:float true, match:class ^(.*zathura.*)$
+#windowrule = size 35% 90%, match:class ^(.*zathura.*)$
+#windowrule = center 1, match:class ^(.*zathura.*)$
+
+#windowrule = center 1, match:class ^(.*scrcpy.*)$
+#windowrule = match:float true, match:class ^(.*scrcpy.*)$
+
+#windowrule = noinitialfocus true, class:(.*[Ss]potify.*)|(.*tidal-hifi.*)$|(.*You[Tt]ube Music.*)
+
+#windowrule = idleinhibit always, match:class ^(.*steam_app.*)$
+#windowrule = idleinhibit fullscreen, match:class ^(.*celluloid.*)$|^(.*mpv.*)$
+#windowrule = idleinhibit fullscreen, match:class ^(.*LibreWolf.*)$|^(.*floorp.*)$|^(.*Brave.*)$|^(.*firefox.*)$|^(.*chromium.*)$|^(.*zen.*)$
+
+#windowrule = immediate, match:class ^(.*steam_app.*)$
+
+#windowrule = match:float true, match:class ^(org.gnome.FileRoller)$
+#windowrule = match:float true, match:class ^(nemo)$ && title:^(.*Properties.*)$
+
+# Layer Rules
+# Nota: Esses erros geralmente desaparecem após corrigir as windowrules acima.
+layerrule = animation popin, match:namespace rofi
+layerrule = blur true, match:namespace rofi
+layerrule = ignore_zero true, match:namespace rofi
+
+layerrule = blur true, match:namespace waybar
+layerrule = ignorezero true, match:namespace waybar
+
+layerrule = ignorezero true, match:namespace swaync-notification-window
+layerrule = animation slide, match:namespace swaync-notification-window
+layerrule = animation slide, match:namespace swaync-control-center
+
+layerrule = animation fade, match:namespace swayosd
+
+layerrule = animation fade, match:namespace selection
+layerrule = animation fade, match:namespace hyprlock
+
+layerrule = no_anim true, match:namespace hyprpicker
