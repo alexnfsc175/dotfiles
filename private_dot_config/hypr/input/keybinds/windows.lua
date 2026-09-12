@@ -89,6 +89,11 @@ hl.bind("SUPER + ALT + down",  hl.dsp.window.swap({ direction = "d" }), { descri
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true, description = "Mover janela com mouse" })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true, description = "Redimensionar com mouse" })
 
+-- Mover janela para monitor adjacente
+hl.bind("SUPER + CTRL + left",  hl.dsp.window.move({ monitor = "l" }), { description = "Mover janela para monitor esquerda" })
+hl.bind("SUPER + CTRL + right", hl.dsp.window.move({ monitor = "r" }), { description = "Mover janela para monitor direita" })
+hl.bind("SUPER + CTRL + up",    hl.dsp.window.move({ monitor = "u" }), { description = "Mover janela para monitor cima" })
+hl.bind("SUPER + CTRL + down",  hl.dsp.window.move({ monitor = "d" }), { description = "Mover janela para monitor baixo" })
+
 -- Cycle entre janelas (ALT+Tab)
-hl.bind("ALT + Tab", hl.dsp.window.cycle_next(),        { repeating = true, description = "Ciclar janelas" })
-hl.bind("ALT + Tab", hl.dsp.window.bring_to_top(), { repeating = true, description = "Trazer janela ao topo" })
+hl.bind("ALT + Tab", hl.dsp.window.cycle_next(), { repeating = true, description = "Ciclar janelas" })

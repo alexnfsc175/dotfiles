@@ -1,0 +1,9 @@
+module quickshell.bar.widgets
+WorkspaceIndicator 1.0 WorkspaceIndicator.qml
+ClockWidget 1.0 ClockWidget.qml
+VolumeWidget 1.0 VolumeWidget.qml
+BatteryWidget 1.0 BatteryWidget.qml
+BluetoothWidget 1.0 BluetoothWidget.qml
+WifiWidget 1.0 WifiWidget.qml
+TrayWidget 1.0 TrayWidget.qml
+PowerButton 1.0 PowerButton.qml

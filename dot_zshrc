@@ -18,6 +18,30 @@ source <(fzf --zsh)
 # export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$HOME/.local/share/omarchy/bin:$PATH"
 # eval "$(~/.local/bin/mise activate zsh)"
 
+# Segredos e configurações locais da máquina (não versionado)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# dev() {
+#     podman run --rm -it \
+#         --userns=keep-id \
+#         -e HOME=/home/vscode \
+#         -e TERM=xterm-256color \
+#         -e GITLAWB_API_KEY="${GITLAWB_API_KEY}" \
+#         -e NVIDIA_API_KEY="${NVIDIA_API_KEY}" \
+#         -v opencode-config:/home/vscode/.config/opencode \
+#         -v opencode-sessions:/home/vscode/.local/share/opencode \
+#         -v opencode-state:/home/vscode/.opencode \
+#         -v opencode-local-state:/home/vscode/.local/state \
+#         -v openclaude-data:/home/vscode/.openclaude \
+#         -v "$(pwd)":/workspace \
+#         -w /workspace \
+#         nvim-dev
+# }
+
+dev() { /home/alex/development/developer-container/scripts/run.sh "$@"; }
+
+
+
 new_tmux () {
   session_dir=$(zoxide query --list | fzf)
   session_name=$(basename "$session_dir")
@@ -64,3 +88,11 @@ if [ -f "/etc/profile.d/aliases_git.sh" ] && type git &>/dev/null; then
 fi
 
 . "$HOME/.local/share/../bin/env"
+# export CONTAINERS_STORAGE_CONF="$HOME/.config/containers/storage.conf"
+
+# bun completions
+[ -s "/home/alex/.bun/_bun" ] && source "/home/alex/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

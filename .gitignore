@@ -1,0 +1,24 @@
+# Local environment and secret files
+*.local
+*.secret
+*.secrets
+*.env
+*.env.*
+*.key
+*.pem
+*.pfx
+*.p12
+*.kdbx
+*.log
+
+# Backups and temp files
+*.bak
+*.bkp
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS artifacts
+.DS_Store
+Thumbs.db

@@ -14,11 +14,12 @@ hl.config({
   },
 })
 
--- Teclado do Notebook → Layout Brasileiro ABNT2
+-- Teclado do Notebook / VM QEMU → Layout Americano Internacional (Padrão) + ABNT2 com alternância
 hl.device({
   name       = "at-translated-set-2-keyboard",
-  kb_layout  = "br",
-  kb_variant = "abnt2",
+  kb_layout  = "us,br",
+  kb_variant = "intl,abnt2",
+  kb_options = "grp:alt_shift_toggle",
 })
 
 -- Teclado Keychron K7 Pro → Layout Americano Internacional

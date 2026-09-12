@@ -67,3 +67,6 @@ Se encontrar um erro sobre uma palavra-chave ou sintaxe que não reconhece, a Wi
 3.  **Quando Tudo Falhar, Peça Ajuda:** Se você está em um ciclo de erros que não fazem sentido (como o que aconteceu conosco), pode ser um bug na sua versão do Hyprland.
     *   **Comunidades:** O Discord oficial do Hyprland e o subreddit `r/hyprland` são excelentes lugares.
     *   **O que fornecer:** Ao pedir ajuda, sempre inclua a saída de `hyprctl configerrors` e `journalctl -b | grep -iE "hyprland.*(error|warning)"`, além dos seus arquivos de configuração relevantes.
+
+
+tail -f $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/hyprland.log

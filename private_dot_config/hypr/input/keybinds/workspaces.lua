@@ -3,21 +3,34 @@
 
 local HYPRSCRIPTS = os.getenv("HOME") .. "/.config/hypr/scripts"
 
--- Trocar para workspace 1-10
-for i = 1, 10 do
-  local key = i == 10 and "0" or tostring(i)
+-- Workspace → Monitor mapping (carregado de core/config.lua)
+local config = require("core.config")
+local monitors = config.monitors
+local ws_per_monitor = config.ws_per_monitor
 
-  hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = tostring(i) }), {
-    description = "Abrir workspace " .. i,
-  })
+for i, monitor in ipairs(monitors) do
+  for j = 1, ws_per_monitor do
+    local ws = (i - 1) * ws_per_monitor + j
+    local key = tostring(ws)
 
-  hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = tostring(i) }), {
-    description = "Mover janela para workspace " .. i,
-  })
+    -- Mapear workspace para monitor
+    hl.workspace_rule({ workspace = ws, monitor = monitor, persistent = true })
 
-  hl.bind("SUPER + CTRL + " .. key, hl.dsp.exec_raw(HYPRSCRIPTS .. "/moveTo.sh " .. i), {
-    description = "Mover todas as janelas para workspace " .. i,
-  })
+    -- Trocar para workspace
+    hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = tostring(ws) }), {
+      description = "Abrir workspace " .. ws,
+    })
+
+    -- Mover janela para workspace
+    hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = tostring(ws) }), {
+      description = "Mover janela para workspace " .. ws,
+    })
+
+    -- Mover todas as janelas para workspace
+    hl.bind("SUPER + CTRL + " .. key, hl.dsp.exec_raw(HYPRSCRIPTS .. "/moveTo.sh " .. ws), {
+      description = "Mover todas as janelas para workspace " .. ws,
+    })
+  end
 end
 
 -- Navegação sequencial

@@ -12,18 +12,35 @@ hl.monitor({
   scale    = 1.0,
 })
 
--- Monitor do Centro (AOC 27G2G4)
-hl.monitor({
-  output   = "HDMI-A-1",
-  mode     = "1920x1080@60",
-  position = "1920x0",
-  scale    = 1.0,
-})
 
 -- Monitor da Direita (Dell Alienware)
 hl.monitor({
   output   = "DP-2",
   mode     = "2560x1440@60",
-  position = "3840x0",
+  -- position = "3840x0",
+  position = "1920x0",
   scale    = 1.0,
 })
+
+-- Monitor do Centro (AOC 27G2G4)
+hl.monitor({
+  output   = "HDMI-A-1",
+  mode     = "1920x1080@60",
+  -- position = "1920x0",
+  position = "4480x0",
+  scale    = 1.0,
+})
+
+
+
+-- Monitor Hotplug Handler
+-- Reconfigura workspaces quando monitores são conectados/desconectados
+hl.on("monitor.added", function(monitor)
+  -- Quando um monitor é conectado, reconfigura workspaces
+  hl.exec_cmd("hyprctl dispatch workspace 1")
+end)
+
+hl.on("monitor.removed", function(monitor)
+  -- Quando um monitor é desconectado, move workspaces para monitor principal
+  hl.exec_cmd("hyprctl dispatch moveworkspacetomonitor 1 0")
+end)

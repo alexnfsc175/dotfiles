@@ -19,12 +19,14 @@ package.path = hypr_dir .. "/?.lua;" .. package.path
 require("core.env")           -- Variáveis de ambiente
 require("core.monitors")      -- Layout de monitores
 require("core.options")        -- general, misc, dwindle, cursor
-require("core.workspaces")     -- Workspace → monitor mapping
+require("core.profiles")      -- Detecção de perfil (laptop/desktop/docked)
+require("core.plugins")       -- Sistema de plugins
 
 -- ─── UI / Aparência ────────────────────────────────────────
 require("ui.decoration")      -- Borders, gaps, blur, shadow, group
 require("ui.animations")      -- Curvas bezier + animações
 require("ui.theme")           -- GTK/Qt dark mode
+require("ui.theme_switcher")  -- Alternância light/dark/auto
 
 -- ─── Input ─────────────────────────────────────────────────
 require("input.devices")      -- Teclados, mouse, touchpad
@@ -36,6 +38,7 @@ require("input.keybinds.windows")     -- Kill, float, resize, swap
 require("input.keybinds.workspaces")  -- Switch, move, scroll
 require("input.keybinds.media")       -- Volume, brilho, playerctl
 require("input.keybinds.actions")     -- Reload, screenshot, wallpaper
+require("input.keybinds.dynamic")     -- Keybinds dinâmicos
 
 -- ─── Rules ─────────────────────────────────────────────────
 require("rules.windows")      -- Window rules gerais

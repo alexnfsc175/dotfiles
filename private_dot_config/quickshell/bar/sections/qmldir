@@ -1,0 +1,4 @@
+module quickshell.bar.sections
+LeftSection 1.0 LeftSection.qml
+CenterSection 1.0 CenterSection.qml
+RightSection 1.0 RightSection.qml

@@ -1,0 +1,3 @@
+module quickshell.theme
+singleton ThemeManager 1.0 ThemeManager.qml
+singleton ThemeDefaults 1.0 ThemeDefaults.qml

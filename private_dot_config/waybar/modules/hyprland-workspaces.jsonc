@@ -4,7 +4,7 @@
     "active-only": false,
     "all-outputs": false,
     "enable-bar-scroll": true,
-    "format": "{icon}",
+    "format": "{id} {icon}",
     "format-icons": {
       "1": "󰇧",
       "2": "",
@@ -34,9 +34,9 @@
       "26": "",
       "27": "",
     },
-    "on-scroll-up": "hyprctl dispatch workspace r-1",
-    "on-scroll-down": "hyprctl dispatch workspace r+1",
-    "on-click": "activate",
+    "on-scroll-up": "hyprctl eval \"hl.dispatch(hl.dsp.focus({workspace = 'm-1'}))\"",
+    "on-scroll-down": "hyprctl eval \"hl.dispatch(hl.dsp.focus({workspace = 'm+1'}))\"",
+    "on-click": "/home/alex/.config/waybar/scripts/workspace-click.sh {id}",
     "sort-by-number": true,
   },
 }

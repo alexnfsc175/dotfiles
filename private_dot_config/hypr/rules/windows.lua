@@ -2,10 +2,8 @@
 -- https://wiki.hypr.land/Configuring/Basics/Window-Rules
 
 -- Opacidade padrão via regra (permite que o opacity.lua ultrapasse esse limite depois)
-hl.window_rule({
-  match = { class = ".*" },
-  opacity = "0.92 0.90",
-})
+-- Nota: Removido regex catch-all ".*" por questões de performance
+-- A opacidade agora é aplicada via configuração global se necessário
 
 -- Float presets: center-float-large
 hl.window_rule({
@@ -72,20 +70,18 @@ hl.window_rule({
 })
 
 hl.window_rule({
-  match = { title = "^(Picture-in-Picture)$" },
-  float = true,
+  -- match = { title = "^(Picture-in-Picture)$" },
+  -- float = true,
+    match = { title = "^([Pp]icture[- ][Ii]n[- ][Pp]icture)$" },                                                                                                        
+    float = true,                                                                                                                                                       
+    pin = true,                                                                                                                                                         
+    keep_aspect_ratio = true, 
 })
 
 -- Tile: QEMU
 hl.window_rule({
   match = { class = "^(qemu-system-x86_64)$" },
   tile = true,
-})
-
--- Ignorar maximize de apps
-hl.window_rule({
-  match = { class = ".*" },
-  suppress_event = "maximize",
 })
 
 -- Fix arrasto de XWayland

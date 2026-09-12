@@ -1,0 +1,7 @@
+module quickshell.services
+singleton VolumeService 1.0 VolumeService.qml
+singleton BatteryService 1.0 BatteryService.qml
+singleton WifiService 1.0 WifiService.qml
+singleton BluetoothService 1.0 BluetoothService.qml
+singleton TrayService 1.0 TrayService.qml
+singleton ConfigService 1.0 ConfigService.qml

@@ -18,6 +18,10 @@
 9. [Tabela Resumida de Todos os Atalhos](#-tabela-resumida-de-todos-os-atalhos)
 
 ---
+## Comando para validacao de config:
+
+Hyprland --verify-config
+hyprctl seterror disable 
 
 ## 🔧 Como Funciona a Sintaxe dos Binds
 

@@ -1,0 +1,11 @@
+{
+  "themeName": "catppuccin-macchiato",
+  "clockFormat": "HH:mm",
+  "dateFormat": "dd/MM/yyyy",
+  "volumeStep": 5,
+  "batteryWarningThreshold": 20,
+  "batteryCriticalThreshold": 10,
+  "animationsEnabled": true,
+  "popupOnHover": false,
+  "calendarShowWeekNumbers": false
+}

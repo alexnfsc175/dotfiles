@@ -22,6 +22,14 @@
 .gnupg/
 **/*.key
 **/*.pem
+**/*.token
+**/*.secret
+**/*.secrets
+*.env
+*.env.*
+*.local
+.zshrc.local
+.bashrc.local
 .config/wakatime.cfg
 
 # Chezmoi itself

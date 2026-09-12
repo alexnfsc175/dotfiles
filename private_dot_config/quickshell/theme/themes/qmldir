@@ -1,0 +1,6 @@
+module quickshell.theme.themes
+singleton CatppuccinMacchiato 1.0 CatppuccinMacchiato.qml
+singleton CatppuccinMocha 1.0 CatppuccinMocha.qml
+singleton GruvboxDark 1.0 GruvboxDark.qml
+singleton TokyoNight 1.0 TokyoNight.qml
+singleton Nord 1.0 Nord.qml
