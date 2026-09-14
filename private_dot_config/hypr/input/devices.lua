@@ -2,9 +2,12 @@
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#input
 -- https://wiki.hypr.land/Configuring/Advanced-and-Cool/Devices
 
--- Configuração global de input
+-- Configuração global de input (padrão do sistema: ABNT2)
 hl.config({
   input = {
+    kb_model     = "abnt2",
+    kb_layout    = "br",
+    kb_variant   = "abnt2",
     follow_mouse = 1,
     sensitivity  = 0,
 
@@ -14,17 +17,25 @@ hl.config({
   },
 })
 
--- Teclado do Notebook / VM QEMU → Layout Americano Internacional (Padrão) + ABNT2 com alternância
+-- Teclado do Notebook (Lenovo Legion) → Layout Brasileiro ABNT2 nativo
 hl.device({
   name       = "at-translated-set-2-keyboard",
-  kb_layout  = "us,br",
-  kb_variant = "intl,abnt2",
-  kb_options = "grp:alt_shift_toggle",
+  kb_model   = "abnt2",
+  kb_layout  = "br",
+  kb_variant = "abnt2",
 })
 
--- Teclado Keychron K7 Pro → Layout Americano Internacional
+-- Teclado Keychron K7 Pro → Layout Americano Internacional (cabo e bluetooth)
 hl.device({
   name       = "keychron-k7-pro-keyboard",
+  kb_model   = "pc105",
+  kb_layout  = "us",
+  kb_variant = "intl",
+})
+
+hl.device({
+  name       = "keychron-keychron-k7-pro-keyboard",
+  kb_model   = "pc105",
   kb_layout  = "us",
   kb_variant = "intl",
 })
