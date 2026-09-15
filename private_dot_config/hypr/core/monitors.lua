@@ -1,46 +1,28 @@
 -- Monitores
 -- https://wiki.hypr.land/Configuring/Basics/Monitors
---
--- Layout: [eDP-1] — [HDMI-A-1] — [DP-2]
---          0,0       1920,0       3840,0
 
--- Monitor Esquerdo (Notebook Legion)
-hl.monitor({
-  output   = "eDP-1",
-  mode     = "1920x1080@60",
-  position = "0x0",
-  scale    = 1.0,
-})
+local config = require("core.config")
 
-
--- Monitor da Direita (Dell Alienware)
-hl.monitor({
-  output   = "DP-2",
-  mode     = "2560x1440@60",
-  -- position = "3840x0",
-  position = "1920x0",
-  scale    = 1.0,
-})
-
--- Monitor do Centro (AOC 27G2G4)
-hl.monitor({
-  output   = "HDMI-A-1",
-  mode     = "1920x1080@60",
-  -- position = "1920x0",
-  position = "4480x0",
-  scale    = 1.0,
-})
+-- Aplica configuração física de cada monitor a partir da lista centralizada em core/config.lua
+for _, screen in ipairs(config.screens) do
+  hl.monitor({
+    output   = screen.monitor,
+    mode     = screen.mode,
+    position = screen.position,
+    scale    = screen.scale or 1.0,
+  })
+end
 
 
 
 -- Monitor Hotplug Handler
--- Reconfigura workspaces quando monitores são conectados/desconectados
+-- Reconfigura workspaces e Telas Virtuais quando monitores são conectados/desconectados
 hl.on("monitor.added", function(monitor)
-  -- Quando um monitor é conectado, reconfigura workspaces
-  hl.exec_cmd("hyprctl dispatch workspace 1")
+  -- Recarrega configuração para re-vincular workspaces aos monitores físicos
+  hl.exec_cmd("hyprctl reload")
 end)
 
 hl.on("monitor.removed", function(monitor)
-  -- Quando um monitor é desconectado, move workspaces para monitor principal
-  hl.exec_cmd("hyprctl dispatch moveworkspacetomonitor 1 0")
+  -- Recarrega configuração para converter para o modo de Telas Virtuais no notebook
+  hl.exec_cmd("hyprctl reload")
 end)

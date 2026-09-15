@@ -23,12 +23,84 @@ hl.bind("SUPER + M", hl.dsp.window.fullscreen({ mode = 1 }), {
   description = "Maximizar janela",
 })
 
--- Toggle floating
-hl.bind("SUPER + T", hl.dsp.window.float(), {
+-- Sanitiza janelas flutuantes para não estourarem a resolução do monitor atual
+local function sanitize_floating_window(addr_str, mon)
+  local win = hl.get_window(addr_str)
+  if not win or not win.floating then return end
+
+  local m = mon or win.monitor or hl.get_active_monitor()
+  if not m or not m.width or not m.height then return end
+
+  -- Limite máximo para a janela flutuante caber na tela atual (85% da resolução)
+  local max_w = math.floor(m.width * 0.85)
+  local max_h = math.floor(m.height * 0.85)
+
+  local needs_resize = (win.size.x > max_w or win.size.y > max_h)
+  local needs_reposition = false
+
+  if needs_resize then
+    local scale = math.min(max_w / win.size.x, max_h / win.size.y)
+    local target_w = math.max(300, math.floor(win.size.x * scale))
+    local target_h = math.max(200, math.floor(win.size.y * scale))
+    hl.dispatch(hl.dsp.window.resize({ x = target_w, y = target_h, window = addr_str }))
+    needs_reposition = true
+  end
+
+  -- Verificar se a janela está total ou parcialmente fora dos limites visíveis do monitor
+  if not needs_reposition then
+    local mon_right = m.x + m.width
+    local mon_bottom = m.y + m.height
+    if win.at.x < m.x or (win.at.x + win.size.x) > mon_right or
+       win.at.y < m.y or (win.at.y + win.size.y) > mon_bottom then
+      needs_reposition = true
+    end
+  end
+
+  if needs_reposition then
+    hl.dispatch(hl.dsp.window.center({ window = addr_str }))
+  end
+end
+
+-- Toggle floating (com sanitização inteligente de resolução)
+hl.bind("SUPER + T", function()
+  local w = hl.get_active_window()
+  if not w then return end
+  local addr_str = "address:" .. tostring(w.address)
+  local m = w.monitor or hl.get_active_monitor()
+
+  if w.floating then
+    -- Se já está flutuando, verifica se está estourando a tela (ex: vindo de monitor maior)
+    local max_w = m and math.floor(m.width * 0.85) or 1600
+    local max_h = m and math.floor(m.height * 0.85) or 900
+    if w.size.x > max_w or w.size.y > max_h then
+      sanitize_floating_window(addr_str, m)
+      return
+    end
+    -- Se já está com tamanho adequado, desativa o floating (volta para tiled)
+    hl.dispatch(hl.dsp.window.float({ action = "unset", window = addr_str }))
+  else
+    -- Ativa o floating e ajusta tamanho/posição para caber no monitor atual
+    hl.dispatch(hl.dsp.window.float({ action = "set", window = addr_str }))
+    sanitize_floating_window(addr_str, m)
+  end
+end, {
   description = "Toggle floating",
 })
 
--- Toggle all floating (agora em Lua nativo)
+-- Centralizar janela flutuante ativa
+hl.bind("SUPER + C", function()
+  local w = hl.get_active_window()
+  if not w then return end
+  local addr_str = "address:" .. tostring(w.address)
+  if w.floating then
+    sanitize_floating_window(addr_str, w.monitor or hl.get_active_monitor())
+  end
+  hl.dispatch(hl.dsp.window.center({ window = addr_str }))
+end, {
+  description = "Centralizar janela",
+})
+
+-- Toggle all floating (com sanitização inteligente de resolução)
 hl.bind("SUPER + SHIFT + T", function()
   local ws = hl.get_active_workspace()
   if not ws then return end
@@ -44,9 +116,14 @@ hl.bind("SUPER + SHIFT + T", function()
   end
 
   local target_action = any_tiled and "set" or "unset"
-  
+  local m = hl.get_active_monitor()
+
   for _, w in ipairs(windows) do
-    hl.dispatch(hl.dsp.window.float({ action = target_action, window = "address:" .. tostring(w.address) }))
+    local addr_str = "address:" .. tostring(w.address)
+    hl.dispatch(hl.dsp.window.float({ action = target_action, window = addr_str }))
+    if target_action == "set" then
+      sanitize_floating_window(addr_str, w.monitor or m)
+    end
   end
 end, {
   description = "Toggle all floating",
