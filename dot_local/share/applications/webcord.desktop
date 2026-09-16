@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=WebCord (Wayland/NVIDIA)
+Comment=A Discord client made with the Electron API
+GenericName=Internet Messenger
+Exec=/usr/bin/webcord --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer --ozone-platform=wayland --use-gl=angle --use-angle=vulkan %U
+;; Exec=env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia /usr/bin/webcord --enable-features=UseOzonePlatform --ozone-platform=wayland %U
+Icon=webcord
+Type=Application
+StartupNotify=true
+Categories=Network;InstantMessaging;
+
+
+[Desktop Action Use Vulkan]
+Name=Launch with Vulkan (X11)
+Exec=/usr/bin/webcord --enable-features=SkiaGraphite,Vulkan --ozone-platform=x11 --use-angle=vulkan

@@ -28,6 +28,10 @@
 *.env
 *.env.*
 *.local
+!.local/
+!.local/share/
+!.local/share/applications/
+!.local/share/applications/**
 .zshrc.local
 .bashrc.local
 .config/wakatime.cfg
