@@ -9,63 +9,93 @@ local screens = config.screens
 local connected_set = config.get_connected_set()
 local is_docked = config.is_docked()
 
--- Estado das Telas Virtuais (quando em modo laptop)
-local current_screen = 1
-local last_workspace = {
-  [1] = 1,
-  [2] = 4,
-  [3] = 7,
-}
-
--- Identifica a qual tela um workspace pertence (1, 2 ou 3)
-local function get_screen_for_ws(ws)
-  for _, screen in ipairs(screens) do
-    for _, w in ipairs(screen.workspaces) do
-      if w == ws then
-        return screen
-      end
-    end
-  end
-  return screens[1]
-end
-
 -- =============================================================================
 -- 1. Regras de Workspaces (Mapeamento Dinâmico)
 -- =============================================================================
-local primary_monitor = config.get_primary_monitor()
-
+-- Cada tela ativa vincula seus workspaces como persistentes no monitor conectado correspondente
 for _, screen in ipairs(screens) do
   for _, ws in ipairs(screen.workspaces) do
-    if is_docked and connected_set[screen.monitor] then
-      -- Modo Docked: amarra cada workspace ao seu monitor físico correspondente
-      hl.workspace_rule({ workspace = ws, monitor = screen.monitor, persistent = true })
-    else
-      -- Modo Laptop (ou monitor desconectado): garante que os 9 workspaces fiquem na tela ativa principal
-      hl.workspace_rule({ workspace = ws, monitor = primary_monitor, persistent = true })
-    end
+    hl.workspace_rule({
+      workspace = ws,
+      monitor = screen.monitor,
+      persistent = true,
+    })
   end
 end
 
 -- =============================================================================
--- 2. Funções de Controle das Telas Virtuais
+-- 2. Grupos de Telas (Físicas se multi-monitor, Virtuais se tela única)
 -- =============================================================================
-local function focus_screen(screen_id)
-  local screen = screens[screen_id]
-  if not screen then return end
-  current_screen = screen_id
+local screen_groups = {}
+if #screens > 1 then
+  for i, screen in ipairs(screens) do
+    table.insert(screen_groups, {
+      id          = i,
+      name        = screen.name,
+      monitor     = screen.monitor,
+      workspaces  = screen.workspaces,
+      is_physical = true,
+    })
+  end
+else
+  local single_screen = screens[1]
+  local total_ws = #single_screen.workspaces
+  local group_size = 3
+  local group_id = 1
+  for start_ws = 1, total_ws, group_size do
+    local g_ws = {}
+    for w = start_ws, math.min(start_ws + group_size - 1, total_ws) do
+      table.insert(g_ws, w)
+    end
+    table.insert(screen_groups, {
+      id          = group_id,
+      name        = single_screen.name .. " (Grupo " .. group_id .. ")",
+      monitor     = single_screen.monitor,
+      workspaces  = g_ws,
+      is_physical = false,
+    })
+    group_id = group_id + 1
+  end
+end
 
-  if is_docked and connected_set[screen.monitor] then
-    -- Modo Docked: foca o monitor físico
-    hl.dispatch(hl.dsp.focus({ monitor = screen.monitor }))
+-- Estado ativo
+local current_screen = 1
+local last_workspace = {}
+for i, group in ipairs(screen_groups) do
+  last_workspace[i] = group.workspaces[1] or 1
+end
+
+-- Identifica a qual grupo/tela um workspace pertence
+local function get_group_for_ws(ws)
+  for _, group in ipairs(screen_groups) do
+    for _, w in ipairs(group.workspaces) do
+      if w == ws then
+        return group
+      end
+    end
+  end
+  return screen_groups[1]
+end
+
+-- Funções de navegação de Telas
+local function focus_screen(group_id)
+  local group = screen_groups[group_id]
+  if not group then return end
+  current_screen = group_id
+
+  if group.is_physical and connected_set[group.monitor] then
+    -- Modo Multi-monitor: foca o monitor físico
+    hl.dispatch(hl.dsp.focus({ monitor = group.monitor }))
   else
-    -- Modo Laptop: foca o último workspace ativo desta Tela Virtual
-    local target_ws = last_workspace[screen_id] or screen.workspaces[1]
+    -- Modo Tela Única: foca o último workspace ativo desta Tela Virtual
+    local target_ws = last_workspace[group_id] or group.workspaces[1]
     hl.dispatch(hl.dsp.focus({ workspace = tostring(target_ws) }))
 
     -- Feedback visual discreto no topo
+    local ws_str = table.concat(group.workspaces, ", ")
     local notify_cmd = string.format(
-      "notify-send -t 1200 -h string:x-canonical-private-synchronous:vscreen '🖥️ Tela Virtual %d: %s' 'Workspaces: %d, %d, %d'",
-      screen.id, screen.name, screen.workspaces[1], screen.workspaces[2], screen.workspaces[3]
+      "notify-send -t 1200 -h string:x-canonical-private-synchronous:vscreen '🖥️ Tela Virtual %d: %s' 'Workspaces: %s'",
+      group.id, group.name, ws_str
     )
     hl.exec_cmd(notify_cmd)
   end
@@ -73,28 +103,37 @@ end
 
 local function cycle_screen(direction)
   local next_id = current_screen + direction
-  if next_id > #screens then next_id = 1 end
-  if next_id < 1 then next_id = #screens end
+  if next_id > #screen_groups then next_id = 1 end
+  if next_id < 1 then next_id = #screen_groups end
   focus_screen(next_id)
 end
 
 -- =============================================================================
--- 3. Keybinds para Workspaces Diretos (SUPER + 1..9)
+-- 3. Keybinds para Workspaces Diretos (SUPER + 1..N)
 -- =============================================================================
+local bound_workspaces = {}
+
 for _, screen in ipairs(screens) do
   for _, ws in ipairs(screen.workspaces) do
+    bound_workspaces[ws] = true
     local key = tostring(ws)
 
     -- Abrir workspace (e atualizar a Tela Virtual ativa)
     hl.bind("SUPER + " .. key, function()
-      current_screen = screen.id
-      last_workspace[screen.id] = ws
+      local group = get_group_for_ws(ws)
+      if group then
+        current_screen = group.id
+        last_workspace[group.id] = ws
+      end
       hl.dispatch(hl.dsp.focus({ workspace = tostring(ws) }))
     end, { description = "Abrir workspace " .. ws .. " (" .. screen.name .. ")" })
 
     -- Mover janela ativa para o workspace
     hl.bind("SUPER + SHIFT + " .. key, function()
-      last_workspace[screen.id] = ws
+      local group = get_group_for_ws(ws)
+      if group then
+        last_workspace[group.id] = ws
+      end
       hl.dispatch(hl.dsp.window.move({ workspace = tostring(ws) }))
     end, { description = "Mover janela para workspace " .. ws })
 
@@ -105,37 +144,50 @@ for _, screen in ipairs(screens) do
   end
 end
 
--- =============================================================================
--- 4. Keybinds para Telas Virtuais (SUPER + ALT + 1/2/3 e SUPER + F1/F2/F3)
--- =============================================================================
-for s_idx, screen in ipairs(screens) do
-  local s_key = tostring(s_idx)
+-- Fallback para garantir que atalhos 1 a 9 sempre existam
+for ws = 1, 9 do
+  if not bound_workspaces[ws] then
+    local key = tostring(ws)
+    hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = tostring(ws) }), {
+      description = "Abrir workspace " .. ws,
+    })
+    hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = tostring(ws) }), {
+      description = "Mover janela para workspace " .. ws,
+    })
+  end
+end
 
-  -- Focar Tela Virtual (SUPER + ALT + 1/2/3)
+-- =============================================================================
+-- 4. Keybinds para Telas Físicas / Virtuais
+-- =============================================================================
+for g_idx, group in ipairs(screen_groups) do
+  local s_key = tostring(g_idx)
+
+  -- Focar Tela (SUPER + ALT + 1/2/3...)
   hl.bind("SUPER + ALT + " .. s_key, function()
-    focus_screen(s_idx)
-  end, { description = "Focar Tela Virtual " .. s_idx .. " (" .. screen.name .. ")" })
+    focus_screen(g_idx)
+  end, { description = "Focar Tela " .. s_key .. " (" .. group.name .. ")" })
 
-  -- Focar Tela Virtual (SUPER + F1/F2/F3)
+  -- Focar Tela (SUPER + F1/F2/F3...)
   hl.bind("SUPER + F" .. s_key, function()
-    focus_screen(s_idx)
-  end, { description = "Focar Tela Virtual " .. s_idx .. " (" .. screen.name .. ")" })
+    focus_screen(g_idx)
+  end, { description = "Focar Tela " .. s_key .. " (" .. group.name .. ")" })
 
-  -- Mover janela para a Tela Virtual (SUPER + ALT + SHIFT + 1/2/3)
+  -- Mover janela para a Tela (SUPER + ALT + SHIFT + 1/2/3...)
   hl.bind("SUPER + ALT + SHIFT + " .. s_key, function()
-    local target_ws = last_workspace[s_idx] or screen.workspaces[1]
+    local target_ws = last_workspace[g_idx] or group.workspaces[1]
     hl.dispatch(hl.dsp.window.move({ workspace = tostring(target_ws) }))
     local notify_cmd = string.format(
       "notify-send -t 1200 -h string:x-canonical-private-synchronous:vscreen 'Janela movida' 'Movida para %s (Workspace %d)'",
-      screen.name, target_ws
+      group.name, target_ws
     )
     hl.exec_cmd(notify_cmd)
-  end, { description = "Mover janela para Tela Virtual " .. s_idx })
+  end, { description = "Mover janela para Tela " .. s_key })
 end
 
--- Ciclar Telas Virtuais (SUPER + [ / ])
-hl.bind("SUPER + bracketleft",  function() cycle_screen(-1) end, { description = "Tela Virtual anterior" })
-hl.bind("SUPER + bracketright", function() cycle_screen(1) end,  { description = "Próxima Tela Virtual" })
+-- Ciclar Telas (SUPER + [ / ])
+hl.bind("SUPER + bracketleft",  function() cycle_screen(-1) end, { description = "Tela anterior" })
+hl.bind("SUPER + bracketright", function() cycle_screen(1) end,  { description = "Próxima Tela" })
 
 -- =============================================================================
 -- 5. Navegação Sequencial de Workspaces e Scroll

@@ -2,28 +2,27 @@
 -- Detecta automaticamente o tipo de dispositivo e aplica configurações apropriadas
 -- Suporta: laptop, desktop, docked
 
+local config = require("core.config")
 local M = {}
 
--- Detectar tipo de dispositivo
+-- Detectar tipo de dispositivo de forma instantânea (leitura direta de arquivos, zero IPC, zero jq)
 function M.detect_profile()
-  -- Verifica se tem bateria (laptop)
+  -- Verifica se tem bateria (laptop) via leitura direta de sysfs
   local has_battery = false
-  local handle = io.popen("cat /sys/class/power_supply/BAT0/status 2>/dev/null")
-  if handle then
-    local result = handle:read("*a")
-    handle:close()
-    has_battery = result and result:len() > 0
+  for _, b in ipairs({ "BAT0", "BAT1" }) do
+    local f = io.open("/sys/class/power_supply/" .. b .. "/status", "r")
+    if f then
+      local result = f:read("*l")
+      f:close()
+      if result and #result > 0 then
+        has_battery = true
+        break
+      end
+    end
   end
 
-  -- Verifica se tem monitor externo conectado
-  local has_external_monitor = false
-  handle = io.popen("hyprctl monitors -j 2>/dev/null | jq length")
-  if handle then
-    local result = handle:read("*a")
-    handle:close()
-    local count = tonumber(result) or 0
-    has_external_monitor = count > 1
-  end
+  -- Verifica se tem monitor externo conectado via sysfs (já centralizado em core.config)
+  local has_external_monitor = config.is_docked()
 
   -- Determina o perfil
   if has_battery and has_external_monitor then
