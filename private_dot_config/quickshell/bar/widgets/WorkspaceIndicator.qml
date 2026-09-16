@@ -68,14 +68,14 @@ Item {
                     cursorShape: Qt.PointingHandCursor
 
                     onClicked: {
-                        Quickshell.execDetached(["hyprctl", "dispatch", "workspace", parent.wsId.toString()])
+                        Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = '" + parent.wsId + "' })"])
                     }
 
                     onWheel: function(event) {
                         if (event.angleDelta.y > 0) {
-                            Quickshell.execDetached(["hyprctl", "dispatch", "workspace", "+1"])
+                            Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = 'm+1' })"])
                         } else {
-                            Quickshell.execDetached(["hyprctl", "dispatch", "workspace", "-1"])
+                            Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.focus({ workspace = 'm-1' })"])
                         }
                     }
                 }
