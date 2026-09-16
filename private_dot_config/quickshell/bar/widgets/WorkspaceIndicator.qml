@@ -68,14 +68,14 @@ Item {
                     cursorShape: Qt.PointingHandCursor
 
                     onClicked: {
-                        Hyprland.dispatch("workspace " + parent.wsId.toString())
+                        Quickshell.execDetached(["hyprctl", "dispatch", "workspace", parent.wsId.toString()])
                     }
 
                     onWheel: function(event) {
                         if (event.angleDelta.y > 0) {
-                            Hyprland.dispatch("workspace m+1")
+                            Quickshell.execDetached(["hyprctl", "dispatch", "workspace", "+1"])
                         } else {
-                            Hyprland.dispatch("workspace m-1")
+                            Quickshell.execDetached(["hyprctl", "dispatch", "workspace", "-1"])
                         }
                     }
                 }
