@@ -15,8 +15,16 @@ Singleton {
 
     property string _batPath: ""
 
+    Timer {
+        id: startupTimer
+        interval: 2000
+        running: true
+        repeat: false
+        onTriggered: _detectBattery()
+    }
+
     Component.onCompleted: {
-        _detectBattery()
+        // Inicialização diferida via startupTimer (2s) para não concorrer com o boot
     }
 
     function _detectBattery() {
@@ -75,7 +83,7 @@ Singleton {
 
     Timer {
         id: pollTimer
-        interval: 5000
+        interval: 15000
         running: false
         repeat: false
         onTriggered: batProc.running = true

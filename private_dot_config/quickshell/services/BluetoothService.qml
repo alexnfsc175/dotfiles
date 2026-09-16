@@ -636,18 +636,17 @@ Singleton {
 
     Timer {
         id: adapterPollTimer
-        interval: 8000
-        running: true
+        interval: 30000
+        running: false
         repeat: false
         onTriggered: {
             adapterProc.running = true
-            devicesProc.running = true
         }
     }
 
     Timer {
         id: devicesPollTimer
-        interval: 8000
+        interval: 20000
         running: false
         repeat: false
         onTriggered: {
@@ -658,8 +657,19 @@ Singleton {
     }
 
     Timer {
+        id: startupTimer
+        interval: 3000
+        running: true
+        repeat: false
+        onTriggered: {
+            adapterProc.running = true
+            devicesProc.running = true
+        }
+    }
+
+    Timer {
         id: refreshTimer
-        interval: 1000
+        interval: 500
         running: false
         repeat: false
         onTriggered: {
@@ -683,7 +693,6 @@ Singleton {
     }
 
     Component.onCompleted: {
-        adapterProc.running = true
-        devicesProc.running = true
+        // Inicialização diferida via startupTimer (3s) para liberar o boot inicial do Hyprland
     }
 }

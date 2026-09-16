@@ -13,27 +13,32 @@ Singleton {
     property string deviceName: ""
     property bool available: true
 
+    function refreshImmediate() {
+        pollTimer.interval = 50
+        pollTimer.start()
+    }
+
     function setVolume(level) {
         var clamped = Math.max(0, Math.min(100, level))
         Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", (clamped / 100).toFixed(2)])
-        pollTimer.start()
+        refreshImmediate()
     }
 
     function increaseVolume(step) {
         var s = step || 5
         Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", s + "%+"])
-        pollTimer.start()
+        refreshImmediate()
     }
 
     function decreaseVolume(step) {
         var s = step || 5
         Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", s + "%-"])
-        pollTimer.start()
+        refreshImmediate()
     }
 
     function toggleMute() {
         Quickshell.execDetached(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"])
-        pollTimer.start()
+        refreshImmediate()
     }
 
     Process {
@@ -58,13 +63,14 @@ Singleton {
             if (code !== 0) {
                 root.available = false
             }
+            pollTimer.interval = 3000
             pollTimer.start()
         }
     }
 
     Timer {
         id: pollTimer
-        interval: 1000
+        interval: 1500
         running: true
         repeat: false
         onTriggered: volumeProc.running = true

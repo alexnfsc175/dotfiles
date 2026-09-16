@@ -479,12 +479,12 @@ Singleton {
 
     Timer {
         id: ssidPollTimer
-        interval: 5000
+        interval: 3500
         running: true
         repeat: false
         onTriggered: {
+            interval = 12000
             activeSsidProc.running = true
-            listProc.running = true
             radioProc.running = true
             if (root.connected) {
                 detailsProc.running = true
@@ -494,7 +494,7 @@ Singleton {
 
     Timer {
         id: listPollTimer
-        interval: 8000
+        interval: 25000
         running: false
         repeat: false
         onTriggered: {
@@ -506,7 +506,7 @@ Singleton {
 
     Timer {
         id: radioPollTimer
-        interval: 10000
+        interval: 20000
         running: false
         repeat: false
         onTriggered: radioProc.running = true
@@ -514,7 +514,7 @@ Singleton {
 
     Timer {
         id: detailsPollTimer
-        interval: 10000
+        interval: 15000
         running: false
         repeat: false
         onTriggered: {

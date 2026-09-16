@@ -35,7 +35,7 @@ ShellRoot {
 
         delegate: Component {
             PanelWindow {
-                id: barWindow
+                id: barPanel
                 required property var modelData
                 screen: modelData
 
@@ -71,64 +71,134 @@ ShellRoot {
                         anchors.fill: parent
                         anchors.leftMargin: Theme.ThemeManager.spacingLg
                         anchors.rightMargin: Theme.ThemeManager.spacingLg
-                        monitorName: barWindow.modelData.name
+                        monitorName: barPanel.modelData.name
 
-                        onTogglePowerMenu: powerMenu.visible = !powerMenu.visible
-                        onToggleCalendar: calendarPopup.visible = !calendarPopup.visible
-                        onToggleVolumePopup: volumePopup.visible = !volumePopup.visible
-                        onToggleBatteryPopup: batteryPopup.visible = !batteryPopup.visible
-                        onToggleBluetoothPopup: bluetoothPopup.visible = !bluetoothPopup.visible
-                        onToggleWifiPopup: wifiPopup.visible = !wifiPopup.visible
-                        onWifiHoverEntered: wifiStatsPopup.visible = true
-                        onWifiHoverExited: wifiStatsPopup.visible = false
-                        onBluetoothHoverEntered: bluetoothStatsPopup.visible = true
-                        onBluetoothHoverExited: bluetoothStatsPopup.visible = false
+                        onTogglePowerMenu: barPanel.togglePopup(powerMenuLoader)
+                        onToggleCalendar: barPanel.togglePopup(calendarPopupLoader)
+                        onToggleVolumePopup: barPanel.togglePopup(volumePopupLoader)
+                        onToggleBatteryPopup: barPanel.togglePopup(batteryPopupLoader)
+                        onToggleBluetoothPopup: barPanel.togglePopup(bluetoothPopupLoader)
+                        onToggleWifiPopup: barPanel.togglePopup(wifiPopupLoader)
+                        onWifiHoverEntered: barPanel.showHoverPopup(wifiStatsPopupLoader)
+                        onWifiHoverExited: barPanel.hideHoverPopup(wifiStatsPopupLoader)
+                        onBluetoothHoverEntered: barPanel.showHoverPopup(bluetoothStatsPopupLoader)
+                        onBluetoothHoverExited: barPanel.hideHoverPopup(bluetoothStatsPopupLoader)
                     }
                 }
 
-                Popups.PowerMenu {
-                    id: powerMenu
-                    barWindow: barWindow
+                function togglePopup(loader) {
+                    if (!loader.active) {
+                        loader.active = true
+                    } else if (loader.item) {
+                        loader.item.visible = !loader.item.visible
+                    }
                 }
 
-                Popups.CalendarPopup {
-                    id: calendarPopup
-                    barWindow: barWindow
+                function showHoverPopup(loader) {
+                    if (!loader.active) {
+                        loader.active = true
+                    } else if (loader.item) {
+                        loader.item.visible = true
+                    }
                 }
 
-                Popups.VolumePopup {
-                    id: volumePopup
-                    barWindow: barWindow
+                function hideHoverPopup(loader) {
+                    if (loader.active && loader.item) {
+                        loader.item.visible = false
+                    }
                 }
 
-                Popups.BatteryPopup {
-                    id: batteryPopup
-                    barWindow: barWindow
-                }
-
-                Popups.BluetoothPopup {
-                    id: bluetoothPopup
-                    barWindow: barWindow
-                }
-
-                Components.BluetoothStatsPopup {
-                    id: bluetoothStatsPopup
-                    barWindow: barWindow
-                }
-
-                Popups.WifiPopup {
-                    id: wifiPopup
-                    barWindow: barWindow
-                    onVisibleChanged: {
-                        if (visible && wifiStatsPopup.visible) {
-                            wifiStatsPopup.visible = false
+                Loader {
+                    id: powerMenuLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.PowerMenu {
+                            barWindow: barPanel
                         }
                     }
                 }
 
-                Popups.WifiStatsPopup {
-                    id: wifiStatsPopup
-                    barWindow: barWindow
+                Loader {
+                    id: calendarPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.CalendarPopup {
+                            barWindow: barPanel
+                        }
+                    }
+                }
+
+                Loader {
+                    id: volumePopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.VolumePopup {
+                            barWindow: barPanel
+                        }
+                    }
+                }
+
+                Loader {
+                    id: batteryPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.BatteryPopup {
+                            barWindow: barPanel
+                        }
+                    }
+                }
+
+                Loader {
+                    id: bluetoothPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.BluetoothPopup {
+                            barWindow: barPanel
+                        }
+                    }
+                }
+
+                Loader {
+                    id: bluetoothStatsPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Components.BluetoothStatsPopup {
+                            barWindow: barPanel
+                        }
+                    }
+                }
+
+                Loader {
+                    id: wifiPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.WifiPopup {
+                            barWindow: barPanel
+                            onVisibleChanged: {
+                                if (visible && wifiStatsPopupLoader.active && wifiStatsPopupLoader.item) {
+                                    wifiStatsPopupLoader.item.visible = false
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Loader {
+                    id: wifiStatsPopupLoader
+                    active: false
+                    onLoaded: if (item) item.visible = true
+                    sourceComponent: Component {
+                        Popups.WifiStatsPopup {
+                            barWindow: barPanel
+                        }
+                    }
                 }
             }
         }
